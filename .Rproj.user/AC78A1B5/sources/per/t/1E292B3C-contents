@@ -1,0 +1,13 @@
+---
+title: "Breast cancer"
+author: "Jakub Kubiś"
+date: "12 05 2020"
+output: html_document
+---
+
+##Connect to data base
+
+```{r}
+
+```
+
