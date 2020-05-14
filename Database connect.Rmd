@@ -1,0 +1,80 @@
+---
+title: "Breast cancer"
+author: "Jakub Kubiś"
+date: "12 05 2020"
+output: html_document
+---
+
+##Connect to data base
+
+```{r}
+library("DBI")
+library("ROracle")
+
+
+drv <- dbDriver("Oracle")
+con <- dbConnect(drv, username = "BreastCancer", password = "mundial009", dbname = "XEPDB1")
+
+```
+
+##Joining basicli indyviduals information
+
+```{r}
+
+
+select <- dbSendQuery(con, 
+                      "select 
+d.icgc_donor_id, 
+d.donor_sex, 
+d.donor_vital_status, 
+d.donor_age_at_diagnosis, 
+d.donor_tumour_stage_at_diagnosis,
+e.alcohol_history, 
+e.tabacco_smoking_history_indicator,
+f.donor_has_relative_with_cancer_history, 
+f.relationship_type, 
+f.relationship_type_other, 
+f.relationship_sex, 
+f.relationship_age, 
+f.relationship_disease
+from donor d
+inner join 
+donor_exposure e
+on e.icgc_donor_id = d.icgc_donor_id
+inner join
+donor_family f
+on f.icgc_donor_id = d.icgc_donor_id")
+
+summary <- dbFetch(select)
+
+```
+
+##Summary parametrs
+
+```{r}
+library(tidyverse) 
+
+summary <- summary %>% 
+  mutate(ICGC_DONOR_ID = factor(ICGC_DONOR_ID)) %>% 
+  mutate(DONOR_SEX = as.factor(DONOR_SEX)) %>% 
+  mutate(DONOR_VITAL_STATUS = as.factor(DONOR_VITAL_STATUS)) %>% 
+  mutate(DONOR_AGE_AT_DIAGNOSIS = as.integer(DONOR_AGE_AT_DIAGNOSIS)) %>% 
+  mutate(DONOR_TUMOUR_STAGE_AT_DIAGNOSIS = as.factor(DONOR_TUMOUR_STAGE_AT_DIAGNOSIS)) %>% 
+  mutate(ALCOHOL_HISTORY = as.factor(ALCOHOL_HISTORY)) %>% 
+  mutate(TABACCO_SMOKING_HISTORY_INDICATOR = as.factor(TABACCO_SMOKING_HISTORY_INDICATOR)) %>% 
+  mutate(DONOR_HAS_RELATIVE_WITH_CANCER_HISTORY = as.factor(DONOR_HAS_RELATIVE_WITH_CANCER_HISTORY)) %>% 
+  mutate(RELATIONSHIP_TYPE = as.factor(RELATIONSHIP_TYPE)) %>% 
+  mutate(RELATIONSHIP_TYPE_OTHER = as.factor(RELATIONSHIP_TYPE_OTHER)) %>% 
+  mutate(RELATIONSHIP_SEX = as.factor(RELATIONSHIP_SEX)) %>% 
+  mutate(RELATIONSHIP_AGE = as.integer(RELATIONSHIP_AGE)) %>% 
+  mutate(RELATIONSHIP_DISEASE = as.factor(RELATIONSHIP_DISEASE))
+  
+
+# pz$DISEASE_STATUS_LAST_FOLLOWUP <- as.character(pz$DISEASE_STATUS_LAST_FOLLOWUP) 
+# pz$DISEASE_STATUS_LAST_FOLLOWUP[is.na(pz$DISEASE_STATUS_LAST_FOLLOWUP)] <- "death"
+# pz$DISEASE_STATUS_LAST_FOLLOWUP <- as.factor(pz$DISEASE_STATUS_LAST_FOLLOWUP)
+           
+summary2 <- distinct(summary)
+summary(summary2)
+```
+
