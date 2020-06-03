@@ -13,7 +13,7 @@ library("ROracle")
 
 
 drv <- dbDriver("Oracle")
-con <- dbConnect(drv, username = "BreastCancer", password = "mundial009", dbname = "XEPDB1")
+con <- dbConnect(drv, username = "BreastCancer", password = "+++++", dbname = "XEPDB1")
 
 ```
 
@@ -54,27 +54,135 @@ summary <- dbFetch(select)
 ```{r}
 library(tidyverse) 
 
-summary <- summary %>% 
-  mutate(ICGC_DONOR_ID = factor(ICGC_DONOR_ID)) %>% 
-  mutate(DONOR_SEX = as.factor(DONOR_SEX)) %>% 
-  mutate(DONOR_VITAL_STATUS = as.factor(DONOR_VITAL_STATUS)) %>% 
-  mutate(DONOR_AGE_AT_DIAGNOSIS = as.integer(DONOR_AGE_AT_DIAGNOSIS)) %>% 
+first_analysis <- mutate_all(summary, funs(tolower))
+
+second_analysis <- first_analysis %>% 
+  select(DONOR_TUMOUR_STAGE_AT_DIAGNOSIS) %>% 
+  group_by(DONOR_TUMOUR_STAGE_AT_DIAGNOSIS) %>% 
+  summarise(n = n()) %>% 
   mutate(DONOR_TUMOUR_STAGE_AT_DIAGNOSIS = as.factor(DONOR_TUMOUR_STAGE_AT_DIAGNOSIS)) %>% 
-  mutate(ALCOHOL_HISTORY = as.factor(ALCOHOL_HISTORY)) %>% 
-  mutate(TABACCO_SMOKING_HISTORY_INDICATOR = as.factor(TABACCO_SMOKING_HISTORY_INDICATOR)) %>% 
-  mutate(DONOR_HAS_RELATIVE_WITH_CANCER_HISTORY = as.factor(DONOR_HAS_RELATIVE_WITH_CANCER_HISTORY)) %>% 
-  mutate(RELATIONSHIP_TYPE = as.factor(RELATIONSHIP_TYPE)) %>% 
+  mutate(n = as.numeric(n))
+
+second_analysis$DONOR_TUMOUR_STAGE_AT_DIAGNOSIS[second_analysis$DONOR_TUMOUR_STAGE_AT_DIAGNOSIS == "ll"] <- "ii"
+second_analysis$DONOR_TUMOUR_STAGE_AT_DIAGNOSIS[second_analysis$n < 8] <- NA
+second_analysis$DONOR_TUMOUR_STAGE_AT_DIAGNOSIS[second_analysis$DONOR_TUMOUR_STAGE_AT_DIAGNOSIS == 'unknown'] <- NA
+second_analysis <- drop_na(second_analysis)
+
+
+
+
+ggplot(second_analysis, aes(x = n, y = DONOR_TUMOUR_STAGE_AT_DIAGNOSIS, na.rm = T)) +
+  geom_col()
+
+```
+
+
+```{r}
+third_analysis <- first_analysis %>% 
+  select(ICGC_DONOR_ID, DONOR_HAS_RELATIVE_WITH_CANCER_HISTORY, RELATIONSHIP_DISEASE, RELATIONSHIP_DISEASE, RELATIONSHIP_TYPE_OTHER) %>% 
+  mutate(DONOR_HAS_RELATIVE_WITH_CANCER_HISTORY = as.factor(DONOR_HAS_RELATIVE_WITH_CANCER_HISTORY)) %>%
   mutate(RELATIONSHIP_TYPE_OTHER = as.factor(RELATIONSHIP_TYPE_OTHER)) %>% 
-  mutate(RELATIONSHIP_SEX = as.factor(RELATIONSHIP_SEX)) %>% 
-  mutate(RELATIONSHIP_AGE = as.integer(RELATIONSHIP_AGE)) %>% 
+  mutate(RELATIONSHIP_DISEASE = as.factor(RELATIONSHIP_DISEASE)) %>%
   mutate(RELATIONSHIP_DISEASE = as.factor(RELATIONSHIP_DISEASE))
   
+ggplot(third_analysis, aes(x = DONOR_HAS_RELATIVE_WITH_CANCER_HISTORY, fill= DONOR_HAS_RELATIVE_WITH_CANCER_HISTORY)) +
+  geom_bar() +
+  theme(legend.position = "none")
 
-# pz$DISEASE_STATUS_LAST_FOLLOWUP <- as.character(pz$DISEASE_STATUS_LAST_FOLLOWUP) 
-# pz$DISEASE_STATUS_LAST_FOLLOWUP[is.na(pz$DISEASE_STATUS_LAST_FOLLOWUP)] <- "death"
-# pz$DISEASE_STATUS_LAST_FOLLOWUP <- as.factor(pz$DISEASE_STATUS_LAST_FOLLOWUP)
-           
-summary2 <- distinct(summary)
-summary(summary2)
+summary(third_analysis)
+```
+
+```{r}
+
+
+
+fourth_analysis <- first_analysis %>% 
+  select(ICGC_DONOR_ID, RELATIONSHIP_DISEASE, RELATIONSHIP_TYPE_OTHER, DONOR_HAS_RELATIVE_WITH_CANCER_HISTORY) %>% 
+  filter(DONOR_HAS_RELATIVE_WITH_CANCER_HISTORY == "yes") %>% 
+  mutate(RELATIONSHIP_DISEASE = as.factor(RELATIONSHIP_DISEASE)) %>% 
+  mutate(RELATIONSHIP_TYPE_OTHER = as.factor(RELATIONSHIP_TYPE_OTHER)) %>% 
+  drop_na
+
+#############################################################################33
+
+funkcja("fourth_analysis","DONOR_HAS_RELATIVE_WITH_CANCER_HISTORY", "breast", "Breast cancer")
+
+
+funkcja <- function(col,tab,before,after){
+  col_tab <- paste0(col,"$",tab)
+for (i in eval(parse(text = col_tab))) {
+  eval(parse(text = paste0(col,"$",tab,"<<-as.character(",col,"$",tab,")")))
+   g <- grepl(before, i)
+   if (g == T) {
+     eval(parse(text = paste0(col,"$",tab,"[",col,"$",tab,"%in% i] <<-after")))
+   }
+}
+  eval(parse(text = paste0(col,"$",tab,"<<-as.factor(",col,"$",tab,")")))
+  print("Done")
+}
+
+
+#############################################################################################
+b <- as.character(fourth_analysis$RELATIONSHIP_DISEASE)
+b[b == "breast cancer"] <- "lol"
+
+fourth_analysis$RELATIONSHIP_DISEASE <- b
+
+eval(parse(text = paste0("fourth_analysis$RELATIONSHIP_DISEASE<-b")))
+
+eval(parse(text = paste0(f,"$",w,"<-b")))
+
+d <- "dupa"
+assign(eval(parse(text = x)), lollol)
+eval(parse(text = paste0(fourth_analysis,"$","RELATIONSHIP_DISEASE","<-","1"))) 
+
+eval(call("<-", call("$", as.symbol(fourth_analysis), as.symbol("RELATIONSHIP_DISEASE")), 1))
+
+eval(parse(text = paste0(f,"$",w,"<-", "'lol'")))
+
+replace.list(lollol, eval(parse(text = x)))
+c <- new(class)
+
+changeit("ovarian", "ovarian dupa", "fourth_analysis", "RELATIONSHIP_DISEASE")
+
+f <- "fourth_analysis"
+w <- "RELATIONSHIP_DISEASE"
+x <- paste0(f,"$",w)
+
+eval(parse(text = x)) <- lollol
+
+lollol <- as.character(eval(parse(text = x)))
+lollol <- as.character(lollol)
+lollol[lollol == "breast cancer"] <- "lol"
+lollol <- as.factor(lollol)
+assign(eval(parse(text = x)), lollol)
+
+parse(text = x) <- lollol
+# for (i in fourth_analysis$RELATIONSHIP_DISEASE) {
+#   fourth_analysis$RELATIONSHIP_DISEASE <- as.character(fourth_analysis$RELATIONSHIP_DISEASE)
+#   g <- grepl(before, i)
+#   if (g == T) {fourth_analysis$RELATIONSHIP_DISEASE[fourth_analysis$RELATIONSHIP_DISEASE %in% i] <- after
+#   }
+# }
+
+
+
+
+
+
+ggplot(fourth_analysis, aes(x = RELATIONSHIP_TYPE_OTHER, y = RELATIONSHIP_DISEASE))+
+  geom_point()
+            
+
+fourth_analysis <- distinct(fourth_analysis)
+
+summary(fourth_analysis$RELATIONSHIP_DISEASE)
+
+fourth_analysis %>% 
+  group_by(RELATIONSHIP_DISEASE) %>% 
+  summarise(n = n()) %>% 
+  filter(n > 8)
+  
+
 ```
 
