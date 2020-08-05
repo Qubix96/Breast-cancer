@@ -123,49 +123,6 @@ for (i in eval(parse(text = col_tab))) {
 
 
 #############################################################################################
-b <- as.character(fourth_analysis$RELATIONSHIP_DISEASE)
-b[b == "breast cancer"] <- "lol"
-
-fourth_analysis$RELATIONSHIP_DISEASE <- b
-
-eval(parse(text = paste0("fourth_analysis$RELATIONSHIP_DISEASE<-b")))
-
-eval(parse(text = paste0(f,"$",w,"<-b")))
-
-d <- "dupa"
-assign(eval(parse(text = x)), lollol)
-eval(parse(text = paste0(fourth_analysis,"$","RELATIONSHIP_DISEASE","<-","1"))) 
-
-eval(call("<-", call("$", as.symbol(fourth_analysis), as.symbol("RELATIONSHIP_DISEASE")), 1))
-
-eval(parse(text = paste0(f,"$",w,"<-", "'lol'")))
-
-replace.list(lollol, eval(parse(text = x)))
-c <- new(class)
-
-changeit("ovarian", "ovarian dupa", "fourth_analysis", "RELATIONSHIP_DISEASE")
-
-f <- "fourth_analysis"
-w <- "RELATIONSHIP_DISEASE"
-x <- paste0(f,"$",w)
-
-eval(parse(text = x)) <- lollol
-
-lollol <- as.character(eval(parse(text = x)))
-lollol <- as.character(lollol)
-lollol[lollol == "breast cancer"] <- "lol"
-lollol <- as.factor(lollol)
-assign(eval(parse(text = x)), lollol)
-
-parse(text = x) <- lollol
-# for (i in fourth_analysis$RELATIONSHIP_DISEASE) {
-#   fourth_analysis$RELATIONSHIP_DISEASE <- as.character(fourth_analysis$RELATIONSHIP_DISEASE)
-#   g <- grepl(before, i)
-#   if (g == T) {fourth_analysis$RELATIONSHIP_DISEASE[fourth_analysis$RELATIONSHIP_DISEASE %in% i] <- after
-#   }
-# }
-
-
 
 
 

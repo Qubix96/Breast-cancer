@@ -20,14 +20,19 @@ f.relationship_type,
 f.relationship_type_other, 
 f.relationship_sex, 
 f.relationship_age, 
-f.relationship_disease
+f.relationship_disease,
+t.first_therapy_type,
+t.second_therapy_type
 from donor d
 inner join 
 donor_exposure e
 on e.icgc_donor_id = d.icgc_donor_id
 inner join
 donor_family f
-on f.icgc_donor_id = d.icgc_donor_id;
+on f.icgc_donor_id = d.icgc_donor_id
+inner join
+donor_therapy t
+on t.icgc_donor_id = d.icgc_donor_id;
 
 
 
